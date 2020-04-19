@@ -19,6 +19,7 @@ All four features are independent so please pick and choose whichever combinatio
 
 4. Display Targeting Lines
     - When selecting a unit to move, a line wil be drawn between your unit and all enemies that are in range of that unit, similar to FE: Three Houses except that the AI is not taken into effect.  Targeting lines will be drawn for every enemy in range regardless of whether that enemy will actually attack your unit on the next enemy phase.
+    - Two options are provided, straight arrows and curved arcs. The difference is merely aesthetic.
 
 ## Sample Screenshots
 
