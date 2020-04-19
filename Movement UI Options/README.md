@@ -59,11 +59,17 @@ The Ghost Preview, Remaining Movement and Targeting Lines features were develope
 Usage rights are the same as the original Japanese script, below is the Google Translate of those terms and conditions:
 
 · Use is limited to the game using the SRPG Studio.
+
 · Commercial and it does not question non-commercial. It is free.
+
 · And processing and the like, there is no problem.
+
 · Credit specified without OK (if you specify thank you "Kyuubu")
+
 · And re-distribution, reproduction OK (it does not have to be the person who can fix if there is a bug is asked to distribute a modified version on your own)
+
 · Wiki OK
+
 · SRPG Studio Terms and Conditions, please comply.
 
 
