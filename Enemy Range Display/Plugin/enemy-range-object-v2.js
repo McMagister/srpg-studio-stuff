@@ -146,7 +146,7 @@ var EnemyRange = {
         }
 
         this._rangeIndexArray = this._sortAndDeduplicate(this._rangeIndexArray);
-        root.log(this._rangeIndexArray);
+        //root.log(this._rangeIndexArray);
 
         // Add outlines (_outlineArray)
         // At this stage, assume the _rangeIndexArray is sorted and has no duplicates
