@@ -34,9 +34,12 @@ All four features are independent so please pick and choose whichever combinatio
 
 ![Targeting Arrows][3]
 
+![Targeting Lines][4]
+
 [1]: Options.png
 [2]: MoveArrow+RemainingMovement+GhostPreview.png
 [3]: TargetingArrows.png
+[4]: TargetingArrowsCurved.png
 
 
 ## Usage
@@ -104,7 +107,8 @@ Usage rights are the same as the original Japanese script, below is the Google T
 
 2020-04-19:
 
-- Make targeting lines with proper arrowheads, removed other options like beziers
+- Make targeting lines with proper arrowheads
+- Updated and added back bezier curves as a targeting line option
 - Add bugfix by Repeat for Ghost Preview
 
 ## Original Readme and Changelog for "Movement Arrows" plugin by Cube

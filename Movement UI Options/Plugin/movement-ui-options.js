@@ -67,7 +67,8 @@ SRPG Studio Version:1.144
 - Cleaned up the code a lot.
 
 2020-04-19:
-- Make targeting lines with proper arrowheads, removed other options like beziers
+- Make targeting lines with proper arrowheads
+- Updated and added back bezier curves as a targeting line option
 - Add bugfix by Repeat for Ghost Preview
 
 --------------------------------------------------------------------------*/
@@ -155,7 +156,7 @@ MapSequenceArea._initMovementLocus = function() {
 	this._movementLocus.goalX = this._targetUnit.getMapX();
 	this._movementLocus.goalY = this._targetUnit.getMapY();
 
-	if (!ConfigItem.TargetingLines.getFlagValue()) {
+	if (!ConfigItem.TargetingLines.isDisabled()) {
 		this._setupTargetingLines(CurrentMap.getIndex(this._movementLocus.goalX, this._movementLocus.goalY));
 	}
 };
@@ -184,7 +185,7 @@ MapSequenceArea._drawMoveUnit = function(direction) {
 
 	// Unit remains in original tile
 	// By default, the unit is using the idle animation
-	if (!ConfigItem.MovementArrow.getFlagValue()) {
+	if (!ConfigItem.MovementArrow.isDisabled()) {
 		if (this._targetUnit.getUnitType() == UnitType.PLAYER) {
 			unitRenderParam.direction = MapSequenceArea._getDefaultDirection();
 			unitRenderParam.animationIndex = MapLayer.getAnimationIndexFromUnit(this._targetUnit);
@@ -194,7 +195,7 @@ MapSequenceArea._drawMoveUnit = function(direction) {
 	}
 
 	// Ghost Preview (like in 3DS games) appears under cursor, at half opacity
-	if (!ConfigItem.GhostPreview.getFlagValue()) {
+	if (!ConfigItem.GhostPreview.isDisabled()) {
 		if (direction == null || this._targetUnit.getUnitType() != UnitType.PLAYER) {
 			// only player units get the ghost preview
 		} else {
@@ -206,7 +207,7 @@ MapSequenceArea._drawMoveUnit = function(direction) {
 	}
 
 	// Show remaining Movement Points if the flag is set in config-movepoint.js (From the Official plugins)
-	if (this._movementLocus.movePoint != null && this._isTargetMovable() && !ConfigItem.MovePointVisible.getFlagValue()) {
+	if (this._movementLocus.movePoint != null && this._isTargetMovable() && !ConfigItem.MovePointVisible.isDisabled()) {
 		var remainingMove = this._unitMovParameter - this._movementLocus.movePoint;
 		// Accounting for canto
 		if(this._parentTurnObject.isRepeatMoveMode()){ 
@@ -221,7 +222,7 @@ MapSequenceArea._drawMoveUnit = function(direction) {
 	}
 	
 	// draw target lines
-	if (!ConfigItem.TargetingLines.getFlagValue()) {
+	if (!ConfigItem.TargetingLines.isDisabled()) {
 		for (var i = 0; i < this._targetLineArray.length; i++) {
 			this._targetLineArray[i].drawShape();
 		}
@@ -260,14 +261,14 @@ MapSequenceArea._moveArea = function() {
 			goalIndex = CurrentMap.getIndex(currentMapCursorX, currentMapCursorY);
 			CourceBuilder.updateMovementLocus(this._targetUnit, goalIndex, newCourceSimulator, this._addCourceSimulator, this._movementLocus);
 
-			if (!ConfigItem.TargetingLines.getFlagValue()) {
+			if (!ConfigItem.TargetingLines.isDisabled()) {
 				this._setupTargetingLines(goalIndex);
 			}
 		} else {
 			this._initMovementLocus();
 
 			// don't draw targeting lines if the cursor is over an enemy unit or other invalid move area
-			if (!ConfigItem.TargetingLines.getFlagValue()) {
+			if (!ConfigItem.TargetingLines.isDisabled()) {
 				this._targetLineArray = [];
 			}
 		}
@@ -340,7 +341,7 @@ MapSequenceArea._setupTargetingLines = function(goalIndex) {
 
 			// if enemy is in range, prepare the target line between the enemy and the cursor position
 			if (inEnemyRange) {
-				var bezier = defineObject(BaseShape,
+				var arrow = defineObject(BaseShape,
 				{
 					_figure: null,
 					_color: 0xff00000,		// colour of arrow
@@ -349,42 +350,112 @@ MapSequenceArea._setupTargetingLines = function(goalIndex) {
 					_strokeAlpha: 128,		// opacity of arrow outline
 					_strokeWeight: 3,		// width of arrow outline
 
-					// Straight lines with arrowheads
+
+					
 					setupShape: function(x1, y1, x2, y2) {
-						// calculating the slope and unit vector [dx, dy]...
-						var dx = x2-x1;
-						var dy = y2-y1;
-						var dist = Math.sqrt(dx*dx + dy*dy);
-						if (dist == 0) return; // prevent division by zero errors
-						dx /= dist;
-						dy /= dist;
+						if (ConfigItem.TargetingLines.getFlagValue() == 0) {
+							// Straight lines with arrowheads
 
-						// change these parameters to change the shape of the arrow
-						var lineStartingPoint = 16; 					// how far away from the originating unit to start drawing the line
-						var arrowBaseLength = Math.max(24, dist - 32); 	// how far away from the destination unit to start drawing the arrowhead
-						var arrowTipLength = Math.max(32, dist - 24); 	// how far away from the destination unit to draw the tip of the arrowhead
-						var arrowWidth = 8; 							// width of the arrowhead
+							// calculating the slope and unit vector [dx, dy]...
+							var dx = x2-x1;
+							var dy = y2-y1;
+							var dist = Math.sqrt(dx*dx + dy*dy);
+							if (dist == 0) return; // prevent division by zero errors
+							dx /= dist;
+							dy /= dist;
 
-						// calculating the polygon points...
-						var mid = GraphicsFormat.MAPCHIP_WIDTH / 2;
-						var lineBaseX = x1+mid + lineStartingPoint*dx;
-						var lineBaseY = y1+mid + lineStartingPoint*dy;
-						var arrowBaseX = x1+mid + arrowBaseLength*dx;
-						var arrowBaseY = y1+mid + arrowBaseLength*dy;
-						var arrowTipX = x1+mid + arrowTipLength*dx;
-						var arrowTipY = y1+mid + arrowTipLength*dy;
+							// change these parameters to change the shape of the arrow
+							var lineStartingPoint = 16; 					// how far away from the originating unit to start drawing the line
+							var arrowBaseLength = Math.max(24, dist - 32); 	// how far away from the destination unit to start drawing the arrowhead
+							var arrowTipLength = Math.max(32, dist - 24); 	// how far away from the destination unit to draw the tip of the arrowhead
+							var arrowWidth = 8; 							// width of the arrowhead
 
-						// create polygon
-						var canvas = root.getGraphicsManager().getCanvas();
-						this._figure = canvas.createFigure();
-						this._figure.beginFigure(lineBaseX, lineBaseY);
-						this._figure.addLine(arrowBaseX, arrowBaseY);
-						this._figure.addLine(arrowBaseX + arrowWidth/2*dy, arrowBaseY - arrowWidth/2*dx);
-						this._figure.addLine(arrowTipX, arrowTipY);
-						this._figure.addLine(arrowBaseX - arrowWidth/2*dy, arrowBaseY + arrowWidth/2*dx);
-						this._figure.addLine(arrowBaseX, arrowBaseY);
-						this._figure.addLine(lineBaseX, lineBaseY);
-						this._figure.endFigure();
+							// calculating the polygon points...
+							var mid = GraphicsFormat.MAPCHIP_WIDTH / 2;
+							var lineBaseX = x1+mid + lineStartingPoint*dx;
+							var lineBaseY = y1+mid + lineStartingPoint*dy;
+							var arrowBaseX = x1+mid + arrowBaseLength*dx;
+							var arrowBaseY = y1+mid + arrowBaseLength*dy;
+							var arrowTipX = x1+mid + arrowTipLength*dx;
+							var arrowTipY = y1+mid + arrowTipLength*dy;
+
+							// create polygon
+							var canvas = root.getGraphicsManager().getCanvas();
+							this._figure = canvas.createFigure();
+							this._figure.beginFigure(lineBaseX, lineBaseY);
+							this._figure.addLine(arrowBaseX, arrowBaseY);
+							this._figure.addLine(arrowBaseX + arrowWidth/2*dy, arrowBaseY - arrowWidth/2*dx);
+							this._figure.addLine(arrowTipX, arrowTipY);
+							this._figure.addLine(arrowBaseX - arrowWidth/2*dy, arrowBaseY + arrowWidth/2*dx);
+							this._figure.addLine(arrowBaseX, arrowBaseY);
+							this._figure.addLine(lineBaseX, lineBaseY);
+							this._figure.endFigure();
+						} else if (ConfigItem.TargetingLines.getFlagValue() == 1) {
+							// Hyperbolic curved lines without arrowheads
+
+							// calculating the slope and unit vector [dx, dy]...
+							var deltaX = x2-x1;
+							var deltaY = y2-y1;
+							var dist = Math.sqrt(deltaX*deltaX + deltaY*deltaY);
+							if (dist == 0) return; // prevent division by zero errors
+							var dx = deltaX / dist;
+							var dy = deltaY / dist;
+
+							// change these parameters to change the shape of the arrow
+							var yThreshold = -64;							// When negative, line will curve "up" even if the enemy is below the player
+																			// We like to set it negative because "upwards" curving arcs seem more aesthetic
+							var xThreshold = 0;
+							var curviness = Math.max(0, dist); 				// higher curviness = taller "arc"
+							var curviness2 = Math.max(0, dist);				// if curviness2 is different than curviness, then the curve will have variable thickness
+
+							// some graphic issues appear when the two units are too close together because beziers tend to 'overshoot' the endpoints
+							if (dist < 96) { 
+								curviness = 0;
+								curviness2 = 0;
+							}
+
+							// Flip some curves because "upwards" curving arcs seem more aesthetic
+							if (deltaX < xThreshold && deltaY >= yThreshold || deltaX >= xThreshold && deltaY < yThreshold) {
+								curviness *= -1;
+								curviness2 *= -1;
+							}
+
+							// calculating the polygon points...
+							var mid = GraphicsFormat.MAPCHIP_WIDTH / 2;
+							var lineBaseX = x1+mid;
+							var lineBaseY = y1;
+							var lineEndX = x2+mid;
+							var lineEndY = y2+mid;
+
+							if (curviness > 0) {
+								if (deltaX > xThreshold && deltaY > yThreshold) {
+									lineEndX = x2;
+									lineEndY = y2;
+								} else if (deltaX > xThreshold && deltaY < yThreshold) {
+									lineEndX = x2;
+									lineEndY = y2+GraphicsFormat.MAPCHIP_HEIGHT;
+								} else if (deltaX < xThreshold && deltaY > yThreshold) {
+									lineEndX = x2+GraphicsFormat.MAPCHIP_WIDTH;
+									lineEndY = y2;
+								} else if (deltaX < xThreshold && deltaY < yThreshold) {
+									lineEndX = x2+GraphicsFormat.MAPCHIP_WIDTH;
+									lineEndY = y2+GraphicsFormat.MAPCHIP_HEIGHT;
+								}
+							} else {
+								lineBaseX = x1+mid;
+								lineBaseY = y1+mid;
+							}
+
+
+
+							// create polygon
+							var canvas = root.getGraphicsManager().getCanvas();
+							this._figure = canvas.createFigure();
+							this._figure.beginFigure(lineBaseX, lineBaseY);
+							this._figure.addBezier(lineBaseX, lineBaseY, (lineEndX + lineBaseX)/2 - curviness/2*dy, (lineEndY + lineBaseY)/2 - curviness/2*dx, lineEndX, lineEndY);
+							this._figure.addBezier(lineEndX, lineEndY, (lineEndX + lineBaseX)/2 - curviness2/2*dy, (lineEndY + lineBaseY)/2 - curviness2/2*dx, lineBaseX, lineBaseY);
+							this._figure.endFigure();
+						}
 					},
 					
 					drawShape: function() {
@@ -402,8 +473,8 @@ MapSequenceArea._setupTargetingLines = function(goalIndex) {
 				var cx = currentMapCursorX * GraphicsFormat.MAPCHIP_WIDTH - root.getCurrentSession().getScrollPixelX();
 				var cy = currentMapCursorY * GraphicsFormat.MAPCHIP_HEIGHT - root.getCurrentSession().getScrollPixelY();
 
-				bezier.setupShape(ex, ey, cx, cy);
-				this._targetLineArray.appendObject(bezier);
+				arrow.setupShape(ex, ey, cx, cy);
+				this._targetLineArray.appendObject(arrow);
 			}
 		}
 	}
@@ -473,7 +544,7 @@ MapSequenceArea._drawArea = function() {
  *  direction_idが想定外の値だった場合は何も描画を行いません
  */
 MapSequenceArea._drawEndPointMovementLocus = function(x, y, direction_id) {
-	if (!ConfigItem.MovementArrow.getFlagValue()) {
+	if (!ConfigItem.MovementArrow.isDisabled()) {
 		switch (direction_id) {
 			case DirectionType.LEFT: // 左方向の矢印描画
 				this._allowPic.drawParts(x, y, MOVE_ALLOW_SETTING.EndPoint.Left[0], MOVE_ALLOW_SETTING.EndPoint.Left[1], GraphicsFormat.MAPCHIP_WIDTH, GraphicsFormat.MAPCHIP_HEIGHT);
@@ -506,7 +577,7 @@ MapSequenceArea._drawEndPointMovementLocus = function(x, y, direction_id) {
  *  direction_idとnext_idの値の組み合わせが想定外だった場合は何も描画を行いません
  */
 MapSequenceArea._drawLineMovementLocus = function(x, y, next_id, direction_id) {
-	if (!ConfigItem.MovementArrow.getFlagValue()) {
+	if (!ConfigItem.MovementArrow.isDisabled()) {
 		if ((direction_id === DirectionType.LEFT && next_id === DirectionType.BOTTOM) || (direction_id === DirectionType.TOP && next_id === DirectionType.RIGHT)) {// 下方向-右方向曲線を描画
 			this._allowPic.drawParts(x, y, MOVE_ALLOW_SETTING.Line.DownRight[0], MOVE_ALLOW_SETTING.Line.DownRight[1], GraphicsFormat.MAPCHIP_WIDTH, GraphicsFormat.MAPCHIP_HEIGHT);
 		} else if ((direction_id === DirectionType.LEFT && next_id === DirectionType.TOP) || (direction_id === DirectionType.BOTTOM && next_id === DirectionType.RIGHT)) {// 上方向-右方向曲線を描画
@@ -535,7 +606,7 @@ MapSequenceArea._drawLineMovementLocus = function(x, y, next_id, direction_id) {
  *  next_idが想定外の値だった場合は何も描画を行いません
  */
 MapSequenceArea._drawStartPointMovementLocus = function(x, y, next_id) {
-	if (!ConfigItem.MovementArrow.getFlagValue()) {
+	if (!ConfigItem.MovementArrow.isDisabled()) {
 		switch (next_id) {
 			case DirectionType.LEFT: // 左方向の始点描画
 				this._allowPic.drawParts(x, y, MOVE_ALLOW_SETTING.StartPoint.Left[0], MOVE_ALLOW_SETTING.StartPoint.Left[1], GraphicsFormat.MAPCHIP_WIDTH, GraphicsFormat.MAPCHIP_HEIGHT);
@@ -811,6 +882,10 @@ The code to do so is in "Show Movement.js"
 	
 	ConfigItem.MovePointVisible = defineObject(BaseConfigtItem,
 	{
+		isDisabled: function() {
+			return this.getFlagValue() == 1;
+		},
+
 		selectFlag: function(index) {
 			root.getExternalData().env.movePointVisible = index;
 		},
@@ -839,6 +914,10 @@ The code to do so is in "Show Movement.js"
 	
 	ConfigItem.GhostPreview = defineObject(BaseConfigtItem,
 	{
+		isDisabled: function() {
+			return this.getFlagValue() == 1;
+		},
+
 		selectFlag: function(index) {
 			root.getExternalData().env.GhostPreview = index;
 		},
@@ -866,6 +945,10 @@ The code to do so is in "Show Movement.js"
 	
 	ConfigItem.MovementArrow = defineObject(BaseConfigtItem,
 	{
+		isDisabled: function() {
+			return this.getFlagValue() == 1;
+		},
+
 		selectFlag: function(index) {
 			root.getExternalData().env.MovementArrow = index;
 		},
@@ -893,20 +976,24 @@ The code to do so is in "Show Movement.js"
 
 	ConfigItem.TargetingLines = defineObject(BaseConfigtItem,
 	{
+		isDisabled: function() {
+			return this.getFlagValue() == 2;
+		},
+
 		selectFlag: function(index) {
 			root.getExternalData().env.TargetingLines = index;
 		},
 		
 		getFlagValue: function() {
 			if (typeof root.getExternalData().env.TargetingLines !== 'number') {
-				return 1;
+				return 2;
 			}
 		
 			return root.getExternalData().env.TargetingLines;
 		},
 		
 		getFlagCount: function() {
-			return 2;
+			return 3;
 		},
 		
 		getConfigItemTitle: function() {
@@ -915,6 +1002,10 @@ The code to do so is in "Show Movement.js"
 		
 		getConfigItemDescription: function() {
 			return 'Displays enemies that can target your unit';
+		},
+
+		getObjectArray: function() {
+			return ["Arrow", "Curved", "Off"];
 		}
 	});
 })();
