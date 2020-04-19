@@ -360,10 +360,10 @@ MapSequenceArea._setupTargetingLines = function(goalIndex) {
 						dy /= dist;
 
 						// change these parameters to change the shape of the arrow
-						var lineStartingPoint = 32; 		// how far away from the originating unit to start drawing the line
-						var arrowBaseLength = dist - 32; 	// how far away from the destination unit to start drawing the arrowhead
-						var arrowTipLength = dist - 24; 	// how far away from the destination unit to draw the tip of the arrowhead
-						var arrowWidth = 8; 				// width of the arrowhead
+						var lineStartingPoint = 16; 					// how far away from the originating unit to start drawing the line
+						var arrowBaseLength = Math.max(24, dist - 32); 	// how far away from the destination unit to start drawing the arrowhead
+						var arrowTipLength = Math.max(32, dist - 24); 	// how far away from the destination unit to draw the tip of the arrowhead
+						var arrowWidth = 8; 							// width of the arrowhead
 
 						// calculating the polygon points...
 						var mid = GraphicsFormat.MAPCHIP_WIDTH / 2;
