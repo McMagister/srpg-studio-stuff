@@ -6,4 +6,4 @@ This is the [Enemy Range Display] script by Goinza, modified by me to add red ou
 
 [1]: Example.png
 
-[Enemy Range Display]: 'https://github.com/Goinza/Plugins-for-SRPG-Studio/tree/master/Enemy Range Display'
+[Enemy Range Display]: https://github.com/Goinza/Plugins-for-SRPG-Studio/tree/master/Enemy%20Range%20Display
