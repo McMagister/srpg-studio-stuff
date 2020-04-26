@@ -25,6 +25,7 @@ SOFTWARE.
  * 
  * Edits by McMagister
  * 2020-04-19: Draw outline over the enemy attack range
+ * 2020-04-21: Use the Unit State Animator to handle the drawing of marked enemy units
  */
 
 
@@ -107,6 +108,7 @@ var EnemyRange = {
         else {
             unit.custom.mark = true;
         }
+        UnitStateAnimator.updateIcons();
         this.updateRange();
     },
 
