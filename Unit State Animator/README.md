@@ -4,9 +4,9 @@ The Unit State Animator is a plugin that serves as a framework to display icons 
 
 ![Warning Markers][1]
 
-[1]: helper.png
+[1]: Example.png
 
-*Example of a script using this plugin to draw icons over units with critical hit warnings and talk events.  It is by Repeat, check it out! https://github.com/TheRepeat/SRPG-Studio/tree/master/Repeat%27s%20QoL%20Enhancement%20Pack/Markers *
+*Example of a script using this plugin to draw icons over units with critical hit warnings and talk events.  It is by Repeat, check it out! https://github.com/TheRepeat/SRPG-Studio/tree/master/Repeat%27s%20QoL%20Enhancement%20Pack/Markers*
 
 SRPG Studio has a limit of 6 states per unit, and having states that have no purpose but display an icon is an inefficient use of them.  
 
