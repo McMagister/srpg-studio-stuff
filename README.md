@@ -1,5 +1,9 @@
 # srpg-studio-stuff
 
+![Tileset][1]
+
+[1]: https://github.com/McMagister/srpg-studio-stuff/raw/master/32px%20FE-style%20Tileset/samples.png
+
 Public resources for SRPG Studio http://srpgstudio.com/english/
 
 Be sure to read the README for each resource as each resource has it's own individual license.
