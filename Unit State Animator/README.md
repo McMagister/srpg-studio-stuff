@@ -2,6 +2,12 @@
 
 The Unit State Animator is a plugin that serves as a framework to display icons over enemy units without the use of states, like for example the exclamation icons that appear over enemy units with effective weapons or high critical rates in the later Fire Emblems.  Or the support levels of your allies, or to display which units have talk events.  Or display an icon for your custom implementation of pair-up, or display an icon over bosses... the list goes on and on.
 
+![Warning Markers][1]
+
+[1]: helper.png
+
+*Example of a script using this plugin to draw icons over units with critical hit warnings and talk events.  It is by Repeat, check it out! https://github.com/TheRepeat/SRPG-Studio/tree/master/Repeat%27s%20QoL%20Enhancement%20Pack/Markers *
+
 SRPG Studio has a limit of 6 states per unit, and having states that have no purpose but display an icon is an inefficient use of them.  
 
 Note that by itself, the file `!unit-state-animator.js` does nothing, but any other plugin can make use of this one to display icons.
@@ -29,9 +35,9 @@ var BOSS_ICON = {
 
 **xSrc and ySrc:** The positions of the particular icon you want to use WITHIN the file. Note that the first row and column are index 0.  Below is an example image (made by Repeat) that shows how xSrc and ySrc are determined.  Note this applies both to runtime and non-runtime icon files.
 
-![xSrc ySrc Example][1]
+![xSrc ySrc Example][2]
 
-[1]: helper.png
+[2]: helper.png
 
 
 ### 2. Extend `UnitStateAnimator._updateIconByUnit()` ###
