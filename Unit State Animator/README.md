@@ -24,7 +24,9 @@ var BOSS_ICON = {
 ```
 
 **isRuntime:** A boolean value.  Set to *false* if the file uses a custom imported asset or *true* if it is using a default Runtime asset.
+
 **id:** The ID number of the file you added to the icon folder in SRPG Studio, or 0 if using the runtime icons.  If you haven't already, in SRPG Studio, go into Tools > Options > Data and check "Display id next to data name".
+
 **xSrc and ySrc:** The positions of the particular icon you want to use WITHIN the file. Note that the first row and column are index 0.  Below is an example image (made by Repeat) that shows how xSrc and ySrc are determined.  Note this applies both to runtime and non-runtime icon files.
 
 ![xSrc ySrc Example][1]
