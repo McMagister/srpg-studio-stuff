@@ -4,7 +4,7 @@ The Unit State Animator is a plugin that serves as a framework to display icons 
 
 SRPG Studio has a limit of 6 states per unit, and having states that have no purpose but display an icon is an inefficient use of them.  
 
-Note that by itself, the file "!unit-state-animator.js" does nothing, but any other plugin can make use of this one to display icons.
+Note that by itself, the file `!unit-state-animator.js` does nothing, but any other plugin can make use of this one to display icons.
 
 
 ## How to Use this Plugin ##
@@ -14,7 +14,7 @@ A simple plugin that draws a shield over Boss units is included.  (boss-indicato
 ### 1. Define Icons ###
 To use the Unit State Animator in your own plugin, first, you should define your icons using the below template.  All options are required.
 
-```
+```javascript
 var BOSS_ICON = {
     isRuntime: true,
     id: 0,
@@ -23,9 +23,9 @@ var BOSS_ICON = {
 };
 ```
 
-**isRuntime: ** A boolean value.  Set to *false* if the file uses a custom imported asset or *true* if it is using a default Runtime asset.
-**id: ** The ID number of the file you added to the icon folder in SRPG Studio, or 0 if using the runtime icons.
-**xSrc and ySrc: ** The positions of the particular icon you want to use WITHIN the file. Note that the first row and column are index 0.  Below is an example image (made by Repeat) that shows how xSrc and ySrc are determined.  Note this applies both to runtime and non-runtime icon files.
+**isRuntime:** A boolean value.  Set to *false* if the file uses a custom imported asset or *true* if it is using a default Runtime asset.
+**id:** The ID number of the file you added to the icon folder in SRPG Studio, or 0 if using the runtime icons.  If you haven't already, in SRPG Studio, go into Tools > Options > Data and check "Display id next to data name".
+**xSrc and ySrc:** The positions of the particular icon you want to use WITHIN the file. Note that the first row and column are index 0.  Below is an example image (made by Repeat) that shows how xSrc and ySrc are determined.  Note this applies both to runtime and non-runtime icon files.
 
 ![xSrc ySrc Example][1]
 
@@ -36,7 +36,7 @@ var BOSS_ICON = {
 
 Then, your plugin will extend the functionality of `UnitStateAnimator._updateIconByUnit()` to add your icon.  By using an alias, multiple plugins can extend this same function.  An example implementation is below:
 
-```
+```javascript
 // Delegate the responsibility of rendering the custom parameters to UnitStateAnimator
 var alias = UnitStateAnimator._updateIconByUnit;
 UnitStateAnimator._updateIconByUnit = function (unit) {
@@ -52,7 +52,7 @@ UnitStateAnimator._updateIconByUnit = function (unit) {
 ```
 Note the line `this._addIcon(unit, BOSS_ICON_HANDLE, UnitStateAnimType.FIXED, 10, 24);`  While the first two parameters are more or less fixed, the remaining three are optional parameters can determine what type of animation to use, and where to place it.  The UnitStateAnimType has three possible values:
 
-```
+```javascript
 var UnitStateAnimType = {
     BOUNCE: 0,  // bounce up and down, the default
     BLINK: 1,   // blink, like SRPG Studio's states
@@ -63,11 +63,11 @@ var UnitStateAnimType = {
 The remaining parameters are the x offset and y offset of the icon (with respect to the unit).  x=0 is the horizontal center of the unit while y=0 is the top.  (this is because the default animation is a bouncing icon over the center-top of the unit).
 
 
-### Call `UnitStateAnimator.updateIcons()` whenever the icon should be added or removed ###
+### 3. Call `UnitStateAnimator.updateIcons()` whenever the icon should be added or removed ###
 
 Finally, call `UnitStateAnimator.updateIcons()` whenever there is a need to add or remove an icon.  In the example below, the icons are updated when the map is first loaded.
 
-```
+```javascript
 var alias2 = CurrentMap.prepareMap;
 CurrentMap.prepareMap = function() {
     alias2.call(this);
@@ -76,26 +76,9 @@ CurrentMap.prepareMap = function() {
 };
 ```
 
-
-## Custom Icons ##
-
-If you haven't already, in SRPG Studio, go into Tools > Options > Data and check "Display id next to data name".
-
-First, import your file of choice into Icon within SRPG Studio (for example, markers-placeholder-icon.png). Remember its ID number.
-
-In the file warn-markers-values.js, you'll see that each icon follows the following template:
-    isRuntime:
-    id:
-    xSrc:
-    ySrc:
-isRuntime is a true/false value and determines if the file uses a custom imported asset (false) or a default Runtime asset (true).
-id refers to the ID number of the file you added to the icon folder in SRPG Studio. If you're just using the icon file included with this, then this is the only value that you need to edit.
-xSrc and ySrc are the positions of the particular icon you want to use WITHIN the file. There's an example image that shows what these mean 
-
-
 ## Scripts that use the Unit State Animator ##
 
-https://github.com/TheRepeat/SRPG-Studio/tree/master/Repeat's QoL Enhancement Pack/Markers
+https://github.com/TheRepeat/SRPG-Studio/tree/master/Repeat%27s%20QoL%20Enhancement%20Pack/Markers
 
 Enemy Range Display (enemy-range-mark-v2.js and enemy-range-object-v2.js)
 
