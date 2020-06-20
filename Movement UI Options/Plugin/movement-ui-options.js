@@ -472,7 +472,16 @@ MapSequenceArea._setupTargetingLines = function(goalIndex) {
 				var ey = LayoutControl.getPixelY(enemyUnit.getMapY());
 				var cx = currentMapCursorX * GraphicsFormat.MAPCHIP_WIDTH - root.getCurrentSession().getScrollPixelX();
 				var cy = currentMapCursorY * GraphicsFormat.MAPCHIP_HEIGHT - root.getCurrentSession().getScrollPixelY();
-
+				//MARKYJOE EDIT
+				if (typeof MarkyJoeScroller != "undefined") {
+					var scrollDistX = this._mapCursor._scroller._goalX - this._mapCursor._scroller._prevX;
+					var scrollDistY = this._mapCursor._scroller._goalY - this._mapCursor._scroller._prevY;
+					ex -= scrollDistX;
+					ey -= scrollDistY;
+					cx -= scrollDistX;
+					cy -= scrollDistY;
+				}
+				//END EDIT
 				arrow.setupShape(ex, ey, cx, cy);
 				this._targetLineArray.appendObject(arrow);
 			}
