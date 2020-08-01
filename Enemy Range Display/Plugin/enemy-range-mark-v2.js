@@ -60,6 +60,7 @@ SOFTWARE.
         mk03.call(this, unit);
         if (unit.getUnitType()!=UnitType.PLAYER) {
             EnemyRange.updateRange();
+            UnitStateAnimator.updateIcons();
         }
     }
     
@@ -68,6 +69,7 @@ SOFTWARE.
     DamageControl.setDeathState = function(unit) {
         mk04.call(this, unit);
         EnemyRange.updateRange();
+        UnitStateAnimator.updateIcons();
     }
     
     //Updates the enemy range when a player unit ends its move
