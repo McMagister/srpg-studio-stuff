@@ -156,6 +156,7 @@ var UnitStateAnimator = {
 
     // call this function any time the unit custom parameters related to the icons change
     updateIcons: function() {
+	if(root.getCurrentScene() === SceneType.REST) return;
         this._iconArray = [];
 
         var enemies = EnemyList.getAliveList();
