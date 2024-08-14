@@ -224,8 +224,7 @@ MapSequenceArea._drawMoveUnit = function(direction) {
 	// draw target lines
 	if (!ConfigItem.TargetingLines.isDisabled()) {
 		for (var i = 0; i < this._targetLineArray.length; i++) {
-			if(this._isTargetMovable())
-			{
+			if (this._isTargetMovable()) {
 				this._targetLineArray[i].drawShape();
 			}	
 		}
